@@ -7,7 +7,7 @@ from app.nlp.embedder import SentenceEmbedder
 from app.nlp.similarity import SimilarityEngine
 from app.nlp.utils import load_artifact
 
-from app.schema.parser import (
+from app.schema.internal import (
     ParserResult,
     SymptomMatch,
 )

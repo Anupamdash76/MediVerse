@@ -1,13 +1,9 @@
-import numpy as np
-import pandas as pd
-
 from app.nlp.utils import load_artifact
 
 
 class DiseasePredictor:
     """
-    Handles disease prediction using
-    the trained XGBoost model.
+    Handles disease prediction using the trained XGBoost model.
     """
 
     def __init__(self):
@@ -20,10 +16,7 @@ class DiseasePredictor:
             "label_encoder.pkl"
         )
 
-    def predict(
-        self,
-        feature_vector: pd.DataFrame,
-    ) -> tuple[str, float]:
+    def predict(self, feature_vector):
 
         prediction = self.model.predict(
             feature_vector
@@ -33,15 +26,4 @@ class DiseasePredictor:
             prediction
         )[0]
 
-        probabilities = self.model.predict_proba(
-            feature_vector
-        )[0]
-
-        confidence = float(
-            np.max(probabilities) * 100
-        )
-
-        return (
-            disease,
-            round(confidence, 2),
-        )
+        return disease

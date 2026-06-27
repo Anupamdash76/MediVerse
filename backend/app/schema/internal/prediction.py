@@ -1,17 +1,15 @@
 from dataclasses import dataclass
 from typing import List
 
-from app.schema.parser import SymptomMatch
+from app.schema.internal.parser import SymptomMatch
 
 
 @dataclass
 class PredictionResult:
     """
-    Final disease prediction returned by PredictionService.
+    Final disease prediction returned by the prediction service.
     """
 
     disease: str
-
-    confidence: float
 
     matched_symptoms: List[SymptomMatch]
