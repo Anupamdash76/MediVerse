@@ -10,16 +10,29 @@ from app.config.settings import (
 class SimilarityEngine:
     """
     Computes semantic similarity between
-    user symptoms and dataset symptoms.
+    the user's symptom and all dataset symptoms.
     """
 
     def __init__(self, symptom_embeddings):
         self.symptom_embeddings = symptom_embeddings
 
-    def find_matches(
-        self,
-        query_embedding,
-    ):
+    def find_matches(self, query_embedding):
+        """
+        Returns the Top-K semantic matches above
+        the configured similarity threshold.
+
+        Returns
+        -------
+        list
+
+        [
+            {
+                "index": 12,
+                "score": 0.94,
+            },
+            ...
+        ]
+        """
 
         cosine_scores = util.pytorch_cos_sim(
             query_embedding,
@@ -37,13 +50,14 @@ class SimilarityEngine:
 
             score = float(score)
 
-            if score >= SIMILARITY_THRESHOLD:
+            if score < SIMILARITY_THRESHOLD:
+                continue
 
-                matches.append(
-                    {
-                        "index": int(index),
-                        "score": score,
-                    }
-                )
+            matches.append(
+                {
+                    "index": int(index),
+                    "score": score,
+                }
+            )
 
         return matches

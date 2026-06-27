@@ -18,7 +18,7 @@ class SymptomMatch:
 @dataclass
 class ParserResult:
     """
-    Final output of the semantic parser.
+    Result returned by the SymptomParser.
     """
 
     feature_vector: pd.DataFrame
