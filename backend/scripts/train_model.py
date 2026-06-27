@@ -1,78 +1,94 @@
-import os
-import joblib
-import pandas as pd
+from app.core.logger import logger
 
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score, classification_report
-
-from xgboost import XGBClassifier
-
-
-
-# Load Dataset
-
-df = pd.read_csv("dataset/Training.csv")
-
-X = df.drop("prognosis", axis=1)
-y = df["prognosis"]
-
-
-
-# Encode Target
-
-
-label_encoder = LabelEncoder()
-y_encoded = label_encoder.fit_transform(y)
-
-
-
-# Train Test Split
-
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y_encoded,
-    test_size=0.2,
-    random_state=42,
-    stratify=y_encoded
+from app.ml.data_loader import load_dataset
+from app.ml.preprocessing import (
+    split_features_target,
+    encode_target,
 )
-
-
-
-# Train Model
-
-
-model = XGBClassifier(
-    objective="multi:softprob",
-    eval_metric="mlogloss",
-    random_state=42
+from app.ml.trainer import (
+    split_data,
+    train_model,
 )
-
-model.fit(X_train, y_train)
-
-
-
-# Evaluate
+from app.ml.evaluator import evaluate
+from app.ml.artifacts import save_artifact
 
 
-predictions = model.predict(X_test)
+def main():
+    # ==========================
+    # Load Dataset
+    # ==========================
+    logger.info("Loading dataset...")
+    df = load_dataset()
 
-accuracy = accuracy_score(y_test, predictions)
+    # ==========================
+    # Preprocessing
+    # ==========================
+    logger.info("Splitting features and target...")
+    X, y = split_features_target(df)
 
-print(f"\nAccuracy : {accuracy:.4f}\n")
+    logger.info("Encoding disease labels...")
+    y_encoded, encoder = encode_target(y)
 
-print(classification_report(y_test, predictions))
+    # ==========================
+    # Train-Test Split
+    # ==========================
+    logger.info("Creating train-test split...")
+    X_train, X_test, y_train, y_test = split_data(
+        X,
+        y_encoded,
+    )
+
+    # ==========================
+    # Model Training
+    # ==========================
+    logger.info("Training XGBoost model...")
+    model = train_model(
+        X_train,
+        y_train,
+    )
+
+    # ==========================
+    # Model Evaluation
+    # ==========================
+    logger.info("Evaluating model...")
+    metrics = evaluate(
+        model,
+        X_test,
+        y_test,
+    )
+
+    # ==========================
+    # Save Artifacts
+    # ==========================
+    logger.info("Saving model artifacts...")
+
+    save_artifact(
+        model,
+        "xgb_model.pkl",
+    )
+
+    save_artifact(
+        encoder,
+        "label_encoder.pkl",
+    )
+
+    save_artifact(
+        list(X.columns),
+        "features.pkl",
+    )
+
+    # ==========================
+    # Training Summary
+    # ==========================
+    logger.info("Training completed successfully!")
+
+    print("\n========== Training Summary ==========")
+    print(f"Accuracy : {metrics['accuracy']:.4f}")
+    print(f"Precision: {metrics['precision']:.4f}")
+    print(f"Recall   : {metrics['recall']:.4f}")
+    print(f"F1 Score : {metrics['f1_score']:.4f}")
+    print("======================================\n")
 
 
-
-# Save Model
-
-
-os.makedirs("models", exist_ok=True)
-
-joblib.dump(model, "models/xgb_model.pkl")
-
-joblib.dump(label_encoder, "models/label_encoder.pkl")
-
-print("\n Model Saved")
+if __name__ == "__main__":
+    main()
