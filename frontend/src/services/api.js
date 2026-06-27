@@ -1,0 +1,1 @@
+axios.post("/predict")
