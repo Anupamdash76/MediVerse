@@ -1,37 +1,127 @@
-# -----------------------------
+```gitignore
+# =====================================================
 # Python
-# -----------------------------
+# =====================================================
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
 
+# =====================================================
 # Virtual Environment
+# =====================================================
+venv/
+.venv/
 backend/venv/
 
+# =====================================================
 # Environment Variables
+# =====================================================
+.env
 backend/.env
 
-# Model Artifacts
-backend/models/*
-!backend/models/.gitkeep
-
-# VS Code
+# =====================================================
+# IDE
+# =====================================================
 .vscode/
+.idea/
 
-# Logs
-*.log
-
-# OS
+# =====================================================
+# OS Files
+# =====================================================
 .DS_Store
 Thumbs.db
 
-# React
-frontend/node_modules/
-frontend/dist/
+# =====================================================
+# Logs
+# =====================================================
+*.log
 
+# =====================================================
 # Jupyter
+# =====================================================
 .ipynb_checkpoints/
 
+# =====================================================
 # Testing
+# =====================================================
 .pytest_cache/
 .coverage
 htmlcov/
+
+# =====================================================
+# React
+# =====================================================
+frontend/node_modules/
+frontend/dist/
+
+# =====================================================
+# Python Build
+# =====================================================
+build/
+dist/
+*.egg-info/
+
+# =====================================================
+# Backend Models
+# =====================================================
+backend/models/*
+!backend/models/.gitkeep
+
+backend/artifacts/*
+!backend/artifacts/.gitkeep
+
+# =====================================================
+# Research (DO NOT PUSH)
+# =====================================================
+
+# Datasets
+research/datasets/
+
+# Artifacts
+research/artifacts/
+
+# Models
+research/models/
+
+# Reports
+research/reports/
+
+# Notebooks
+research/notebooks/
+
+# =====================================================
+# Large ML Files
+# =====================================================
+*.pkl
+*.joblib
+*.pt
+*.pth
+*.onnx
+*.h5
+*.keras
+*.bin
+*.ckpt
+*.npy
+*.npz
+
+# Large CSV/XLSX
+*.csv
+*.xlsx
+
+# XGBoost
+*.json
+
+# =====================================================
+# Keep only required backend model
+# =====================================================
+!backend/models/xgboost.json
+!backend/models/symptom_embeddings.pt
+!backend/models/feature_names.pkl
+!backend/models/label_encoder.pkl
+
+# =====================================================
+# Keep data files used by backend
+# =====================================================
+!backend/app/data/diseases.json
+```

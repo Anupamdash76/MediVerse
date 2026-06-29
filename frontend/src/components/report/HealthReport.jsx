@@ -1,11 +1,21 @@
+import { useState } from "react";
 import { Activity } from "lucide-react";
 
 import GlassCard from "../common/GlassCard";
+
+import DiseaseCard from "./DiseaseCard";
 import MatchedSymptoms from "./MatchedSymptoms";
 import AnalysisStatus from "./AnalysisStatus";
+import UnknownSymptoms from "./UnknownSymptoms";
 
-export default function HealthReport({ prediction, onReset }) {
+export default function HealthReport({
+  prediction,
+  onReset,
+}) {
   if (!prediction) return null;
+
+  const [selectedDisease, setSelectedDisease] =
+    useState(0);
 
   return (
     <GlassCard className="mt-10 p-8">
@@ -41,26 +51,45 @@ export default function HealthReport({ prediction, onReset }) {
 
       </div>
 
-      {/* Disease */}
+      {/* Possible Conditions */}
 
       <div className="mt-10">
 
-        <p className="text-sm uppercase tracking-widest text-slate-500">
+        <h3 className="mb-5 text-xl font-semibold">
 
-          Predicted Condition
+          Possible Conditions
 
-        </p>
+        </h3>
 
-        <h1 className="mt-2 text-4xl font-black text-white">
+        <div className="space-y-5">
 
-          {prediction.disease}
+          {prediction.predictions.map(
+            (disease, index) => (
 
-        </h1>
+              <DiseaseCard
+                key={disease.disease}
+                disease={disease}
+                index={index}
+                isSelected={
+                  selectedDisease === index
+                }
+                onSelect={() =>
+                  setSelectedDisease(index)
+                }
+              />
+
+            )
+          )}
+
+        </div>
 
       </div>
 
       <MatchedSymptoms
         symptoms={prediction.matched_symptoms}
+      />
+      <UnknownSymptoms
+       symptoms={prediction.unknown_symptoms}
       />
 
       <AnalysisStatus />
@@ -77,16 +106,20 @@ export default function HealthReport({ prediction, onReset }) {
         p-5
         "
       >
+
         <p className="text-sm text-yellow-200">
 
-          ⚠ This AI-generated result is intended for informational
-          purposes only and should not replace professional medical advice.
+          ⚠ This AI-generated analysis is intended
+          for informational purposes only and should
+          not replace professional medical advice.
+          Please consult a qualified healthcare
+          professional before making medical decisions.
 
         </p>
 
       </div>
 
-      {/* Button */}
+      {/* Reset */}
 
       <div className="mt-8 flex justify-center">
 

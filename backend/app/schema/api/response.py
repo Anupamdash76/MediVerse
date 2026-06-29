@@ -1,26 +1,34 @@
 from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class SymptomMatchResponse(BaseModel):
-    """
-    Represents one semantic symptom match.
-    """
-
     input: str
     matched: str
     score: float
 
 
-class PredictResponse(BaseModel):
-    """
-    Response returned by the prediction API.
-    """
+class PredictionItemResponse(BaseModel):
+    disease: str
 
-    disease: str = Field(
-        ...,
-        example="Migraine",
-    )
+    summary: str
+
+    recommended_medicines: List[str]
+
+    precautions: List[str]
+
+    doctor_speciality: str
+
+    severity: str
+
+    disclaimer: str
+
+
+class PredictResponse(BaseModel):
+
+    predictions: List[PredictionItemResponse]
 
     matched_symptoms: List[SymptomMatchResponse]
+
+    unknown_symptoms: List[str]

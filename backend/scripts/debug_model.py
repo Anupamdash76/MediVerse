@@ -12,6 +12,19 @@ def main():
     parser_result = parser.parse(symptoms)
 
     print("\n" + "=" * 70)
+    print("Matched Symptoms")
+    print("=" * 70)
+
+    for match in parser_result.matches:
+
+        print(
+            f"{match.input:<25}"
+            f" -> "
+            f"{match.matched:<30}"
+            f"{match.score:.2f}"
+        )
+
+    print("\n" + "=" * 70)
     print("Activated Features")
     print("=" * 70)
 
@@ -22,37 +35,30 @@ def main():
 
     print(active_features)
 
-    print("\nNumber of active symptoms:", active_features.shape[1])
+    print("\nActive Symptoms:", active_features.shape[1])
 
     print("\n" + "=" * 70)
-    print("Prediction")
+    print("Top Predictions")
     print("=" * 70)
 
-    disease, confidence = predictor.predict(
+    result = predictor.predict(
         parser_result.feature_vector
     )
 
-    print(f"Disease   : {disease}")
-    print(f"Confidence: {confidence:.2f}%")
-
-    print("\n" + "=" * 70)
-    print("Top 5 Predictions")
-    print("=" * 70)
-
-    probabilities = predictor.model.predict_proba(
-        parser_result.feature_vector
-    )[0]
-
-    top_indices = probabilities.argsort()[::-1][:5]
-
-    for index in top_indices:
-
-        disease_name = predictor.encoder.inverse_transform([index])[0]
+    for prediction in result["predictions"]:
 
         print(
-            f"{disease_name:<40} "
-            f"{probabilities[index] * 100:.2f}%"
+            f"{prediction['disease']:<45}"
+            f"{prediction['probability']:.2f}%"
         )
+
+    if result["unknown_symptoms"]:
+
+        print("\nUnknown Symptoms")
+
+        for symptom in result["unknown_symptoms"]:
+
+            print("-", symptom)
 
 
 if __name__ == "__main__":

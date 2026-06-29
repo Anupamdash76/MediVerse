@@ -9,6 +9,9 @@ class PredictRequest(BaseModel):
     symptoms: str = Field(
         ...,
         min_length=1,
-        example="headache, vomiting, fever",
+        examples=[
+            "headache, vomiting, fever",
+            "I have severe headache with nausea and vomiting"
+        ],
         description="Comma-separated symptoms or free-text symptom description."
     )

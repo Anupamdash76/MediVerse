@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from app.schema.api import (
     PredictRequest,
     PredictResponse,
+    PredictionItemResponse,
     SymptomMatchResponse,
 )
 
@@ -29,18 +30,54 @@ def predict(request: PredictRequest):
             request.symptoms
         )
 
-        matches = [
-            SymptomMatchResponse(
-                input=match.input,
-                matched=match.matched,
-                score=match.score,
+        predictions = [
+
+            PredictionItemResponse(
+
+                disease=item["disease"],
+
+                summary=item["summary"],
+
+                recommended_medicines=item["recommended_medicines"],
+
+                precautions=item["precautions"],
+
+                doctor_speciality=item["doctor_speciality"],
+
+                severity=item["severity"],
+
+                disclaimer=item["disclaimer"],
+
             )
-            for match in result.matched_symptoms
+
+            for item in result["predictions"]
+
+        ]
+
+        matches = [
+
+            SymptomMatchResponse(
+
+                input=match.input,
+
+                matched=match.matched,
+
+                score=match.score,
+
+            )
+
+            for match in result["matched_symptoms"]
+
         ]
 
         return PredictResponse(
-            disease=result.disease,
+
+            predictions=predictions,
+
             matched_symptoms=matches,
+
+            unknown_symptoms=result["unknown_symptoms"],
+
         )
 
     except Exception as e:

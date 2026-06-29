@@ -1,29 +1,61 @@
-from app.nlp.utils import load_artifact
+import joblib
+import numpy as np
+
+from pathlib import Path
+from xgboost import XGBClassifier
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+MODEL_PATH = BASE_DIR / "models" / "xgboost.json"
+ENCODER_PATH = BASE_DIR / "artifacts" / "label_encoder.pkl"
 
 
 class DiseasePredictor:
     """
-    Handles disease prediction using the trained XGBoost model.
+    Performs disease prediction from a prepared feature vector.
     """
 
     def __init__(self):
 
-        self.model = load_artifact(
-            "xgb_model.pkl"
+        self.model = XGBClassifier()
+        self.model.load_model(str(MODEL_PATH))
+
+        self.encoder = joblib.load(
+            ENCODER_PATH
         )
 
-        self.encoder = load_artifact(
-            "label_encoder.pkl"
-        )
+    def predict(
+        self,
+        feature_vector,
+        top_k=3,
+    ):
 
-    def predict(self, feature_vector):
-
-        prediction = self.model.predict(
+        probabilities = self.model.predict_proba(
             feature_vector
-        )
-
-        disease = self.encoder.inverse_transform(
-            prediction
         )[0]
 
-        return disease
+        top_indices = np.argsort(
+            probabilities
+        )[::-1][:top_k]
+
+        predictions = []
+
+        for idx in top_indices:
+
+            predictions.append(
+                {
+                    "disease": self.encoder.inverse_transform(
+                        [idx]
+                    )[0],
+                    "probability": round(
+                        float(probabilities[idx] * 100),
+                        2,
+                    ),
+                }
+            )
+
+        return {
+            "predictions": predictions,
+            "unknown_symptoms": [],
+        }

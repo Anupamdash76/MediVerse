@@ -15,8 +15,8 @@ from app.schema.internal import (
 
 class SymptomParser:
     """
-    Converts natural language symptoms into
-    a machine-learning feature vector using
+    Converts natural language symptoms into a
+    machine-learning feature vector using
     semantic similarity.
     """
 
@@ -25,7 +25,7 @@ class SymptomParser:
         self.embedder = SentenceEmbedder()
 
         self.features = load_artifact(
-            "features.pkl"
+            "feature_names.pkl"
         )
 
         self.symptom_embeddings = torch.load(
@@ -42,7 +42,10 @@ class SymptomParser:
     ) -> ParserResult:
 
         feature_vector = pd.DataFrame(
-            np.zeros((1, len(self.features))),
+            np.zeros(
+                (1, len(self.features)),
+                dtype=np.uint8,
+            ),
             columns=self.features,
         )
 
@@ -55,51 +58,51 @@ class SymptomParser:
                 matches=[],
             )
 
-        symptom_list = symptoms.split(",")
+        symptom_list = [
+            symptom.strip().lower()
+            for symptom in symptoms.split(",")
+            if symptom.strip()
+        ]
 
         activated = set()
 
         for symptom in symptom_list:
 
-            symptom = symptom.strip()
-
-            if not symptom:
-                continue
-
             embedding = self.embedder.encode(
                 symptom
             )
 
-            matches = self.similarity_engine.find_matches(
+            best_match = self.similarity_engine.find_best_match(
                 embedding
             )
 
-            for match in matches:
+            if best_match is None:
+                continue
 
-                feature_name = self.features[
-                    match["index"]
-                ]
+            feature_name = self.features[
+                best_match["index"]
+            ]
 
-                if feature_name in activated:
-                    continue
+            if feature_name in activated:
+                continue
 
-                activated.add(feature_name)
+            activated.add(feature_name)
 
-                feature_vector.loc[
-                    0,
-                    feature_name,
-                ] = 1
+            feature_vector.loc[
+                0,
+                feature_name,
+            ] = 1
 
-                matched_results.append(
-                    SymptomMatch(
-                        input=symptom,
-                        matched=feature_name,
-                        score=round(
-                            match["score"],
-                            4,
-                        ),
-                    )
+            matched_results.append(
+                SymptomMatch(
+                    input=symptom,
+                    matched=feature_name,
+                    score=round(
+                        best_match["score"],
+                        4,
+                    ),
                 )
+            )
 
         return ParserResult(
             feature_vector=feature_vector,

@@ -5,19 +5,20 @@ import GlassCard from "../../common/GlassCard";
 import Button from "../../common/Button";
 
 import HealthReport from "../../report/HealthReport";
+import LoadingCard from "../../report/LoadingCard";
 
 import usePrediction from "../../../hooks/usePrediction";
 
 export default function Diagnosis() {
   const [symptoms, setSymptoms] = useState("");
 
-    const {
-  loading,
-  prediction,
-  error,
-  predict,
-  reset,
-} = usePrediction();
+  const {
+    loading,
+    prediction,
+    error,
+    predict,
+    reset,
+  } = usePrediction();
 
   const handleSubmit = async () => {
     if (!symptoms.trim()) return;
@@ -26,15 +27,31 @@ export default function Diagnosis() {
   };
 
   const handleReset = () => {
-  setSymptoms("");
-  reset();
-};
+    setSymptoms("");
+    reset();
+  };
 
   return (
     <Section id="diagnosis">
       <div className="mx-auto max-w-5xl">
-        {!prediction ? (
+
+        {/* Loading */}
+
+        {loading ? (
+
+          <LoadingCard />
+
+        ) : prediction ? (
+
+          <HealthReport
+            prediction={prediction}
+            onReset={handleReset}
+          />
+
+        ) : (
+
           <GlassCard className="p-10">
+
             <h2 className="text-center text-5xl font-black">
               Start Your AI Diagnosis
             </h2>
@@ -73,22 +90,17 @@ export default function Diagnosis() {
             )}
 
             <div className="mt-8 flex justify-center">
-              <Button
-                onClick={handleSubmit}
-                disabled={loading}
-              >
-                {loading
-                  ? "Analyzing..."
-                  : "Analyze Symptoms"}
+
+              <Button onClick={handleSubmit}>
+                Analyze Symptoms
               </Button>
+
             </div>
+
           </GlassCard>
-        ) : (
-          <HealthReport
-            prediction={prediction}
-            onReset={handleReset}
-          />
+
         )}
+
       </div>
     </Section>
   );

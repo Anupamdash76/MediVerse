@@ -10,25 +10,41 @@ from app.config.settings import (
 class SimilarityEngine:
     """
     Computes semantic similarity between
-    the user's symptom and all dataset symptoms.
+    the user's symptom and all known symptoms.
     """
 
     def __init__(self, symptom_embeddings):
+
         self.symptom_embeddings = symptom_embeddings
 
-    def find_matches(self, query_embedding):
+    def find_matches(
+        self,
+        query_embedding,
+        top_k=TOP_K,
+        threshold=SIMILARITY_THRESHOLD,
+    ):
         """
-        Returns the Top-K semantic matches above
-        the configured similarity threshold.
+        Returns the best semantic matches.
+
+        Parameters
+        ----------
+        query_embedding
+            Sentence embedding of the user's symptom.
+
+        top_k
+            Maximum number of matches.
+
+        threshold
+            Minimum cosine similarity.
 
         Returns
         -------
-        list
+        list[dict]
 
         [
             {
-                "index": 12,
-                "score": 0.94,
+                "index": 25,
+                "score": 0.96,
             },
             ...
         ]
@@ -41,7 +57,7 @@ class SimilarityEngine:
 
         scores, indices = torch.topk(
             cosine_scores,
-            k=TOP_K,
+            k=min(top_k, len(cosine_scores)),
         )
 
         matches = []
@@ -50,7 +66,7 @@ class SimilarityEngine:
 
             score = float(score)
 
-            if score < SIMILARITY_THRESHOLD:
+            if score < threshold:
                 continue
 
             matches.append(
@@ -61,3 +77,23 @@ class SimilarityEngine:
             )
 
         return matches
+
+    def find_best_match(
+        self,
+        query_embedding,
+        threshold=SIMILARITY_THRESHOLD,
+    ):
+        """
+        Returns only the highest-confidence match.
+        """
+
+        matches = self.find_matches(
+            query_embedding=query_embedding,
+            top_k=1,
+            threshold=threshold,
+        )
+
+        if not matches:
+            return None
+
+        return matches[0]
