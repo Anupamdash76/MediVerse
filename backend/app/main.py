@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes.prediction import router as prediction_router
 from app.auth.router import router as auth_router
 from app.profile.router import router as profile_router
+from app.history.router import router as history_router
 
 app = FastAPI(
     title="MediVerse API",
@@ -41,6 +42,10 @@ app.include_router(
     prefix="/api/v1",
 )
 
+app.include_router(
+    history_router,
+    prefix="/api/v1",
+)
 
 # -----------------------------
 # Root Endpoint

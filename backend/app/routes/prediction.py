@@ -1,4 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+)
+
+from app.auth.dependencies import get_current_user
+
+from app.history.service import (
+    history_service,
+)
 
 from app.schema.api import (
     PredictRequest,
@@ -22,7 +32,10 @@ prediction_service = PredictionService()
     "",
     response_model=PredictResponse,
 )
-def predict(request: PredictRequest):
+async def predict(
+    request: PredictRequest,
+    current_user: dict = Depends(get_current_user),
+):
 
     try:
 
@@ -69,6 +82,29 @@ def predict(request: PredictRequest):
             for match in result["matched_symptoms"]
 
         ]
+
+        # ------------------------------------
+        # Save Prediction History
+        # ------------------------------------
+
+        await history_service.save_prediction(
+
+            user_id=str(current_user["_id"]),
+
+            input_symptoms=request.symptoms,
+
+            matched_symptoms=[
+                {
+                    "input": match.input,
+                    "matched": match.matched,
+                    "score": match.score,
+                }
+                for match in result["matched_symptoms"]
+            ],
+
+            predictions=result["predictions"],
+
+        )
 
         return PredictResponse(
 
