@@ -5,7 +5,7 @@ export default function PersonalInformation({
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
 
-      {/* Section Header */}
+      {/* Header */}
 
       <div className="mb-8 flex items-center gap-4">
 
@@ -18,34 +18,24 @@ export default function PersonalInformation({
         <div>
 
           <h2 className="text-2xl font-bold text-slate-800">
-
             Personal Information
-
           </h2>
 
           <p className="text-slate-500">
-
             Basic health information.
-
           </p>
 
         </div>
 
       </div>
 
-      {/* Form */}
-
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-
-        {/* Age */}
 
         <div>
 
           <label className="mb-2 block font-medium text-slate-700">
-
             Age
             <span className="text-red-500"> *</span>
-
           </label>
 
           <input
@@ -54,27 +44,23 @@ export default function PersonalInformation({
             value={form.age}
             onChange={handleChange}
             placeholder="Enter your age"
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="form-input"
           />
 
         </div>
 
-        {/* Gender */}
-
         <div>
 
           <label className="mb-2 block font-medium text-slate-700">
-
             Gender
             <span className="text-red-500"> *</span>
-
           </label>
 
           <select
             name="gender"
             value={form.gender}
             onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="form-select"
           >
 
             <option value="">
@@ -97,15 +83,11 @@ export default function PersonalInformation({
 
         </div>
 
-        {/* Height */}
-
         <div>
 
           <label className="mb-2 block font-medium text-slate-700">
-
             Height (cm)
             <span className="text-red-500"> *</span>
-
           </label>
 
           <input
@@ -114,20 +96,16 @@ export default function PersonalInformation({
             value={form.height_cm}
             onChange={handleChange}
             placeholder="170"
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="form-input"
           />
 
         </div>
 
-        {/* Weight */}
-
         <div>
 
           <label className="mb-2 block font-medium text-slate-700">
-
             Weight (kg)
             <span className="text-red-500"> *</span>
-
           </label>
 
           <input
@@ -136,27 +114,23 @@ export default function PersonalInformation({
             value={form.weight_kg}
             onChange={handleChange}
             placeholder="65"
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="form-input"
           />
 
         </div>
 
-        {/* Blood Group */}
-
         <div className="md:col-span-2">
 
           <label className="mb-2 block font-medium text-slate-700">
-
             Blood Group
             <span className="text-red-500"> *</span>
-
           </label>
 
           <select
             name="blood_group"
             value={form.blood_group}
             onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="form-select"
           >
 
             <option value="">

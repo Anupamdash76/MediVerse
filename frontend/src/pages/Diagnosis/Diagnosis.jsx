@@ -1,6 +1,6 @@
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 
-import DiagnosisSection from "../../components/sections/Diagnosis/Diagnosis";
+import DiagnosisSection from "../../components/dashboard/diagnosis/DiagnosisSection";
 
 export default function Diagnosis() {
 

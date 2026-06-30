@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { Activity } from "lucide-react";
+
+import {
+  Activity,
+  Download,
+} from "lucide-react";
 
 import GlassCard from "../common/GlassCard";
 
@@ -8,16 +12,24 @@ import MatchedSymptoms from "./MatchedSymptoms";
 import AnalysisStatus from "./AnalysisStatus";
 import UnknownSymptoms from "./UnknownSymptoms";
 
+import useAuth from "../../hooks/useAuth";
+
+import generateReportPDF from "../../utils/generateReportPDF";
+
 export default function HealthReport({
   prediction,
   onReset,
 }) {
+
   if (!prediction) return null;
+
+  const { user } = useAuth();
 
   const [selectedDisease, setSelectedDisease] =
     useState(0);
 
   return (
+
     <GlassCard className="mt-10 p-8">
 
       {/* Header */}
@@ -85,12 +97,19 @@ export default function HealthReport({
 
       </div>
 
+      {/* Matched Symptoms */}
+
       <MatchedSymptoms
         symptoms={prediction.matched_symptoms}
       />
+
+      {/* Unknown Symptoms */}
+
       <UnknownSymptoms
-       symptoms={prediction.unknown_symptoms}
+        symptoms={prediction.unknown_symptoms}
       />
+
+      {/* Analysis Status */}
 
       <AnalysisStatus />
 
@@ -98,12 +117,12 @@ export default function HealthReport({
 
       <div
         className="
-        mt-8
-        rounded-2xl
-        border
-        border-yellow-500/20
-        bg-yellow-500/10
-        p-5
+          mt-8
+          rounded-2xl
+          border
+          border-yellow-500/20
+          bg-yellow-500/10
+          p-5
         "
       >
 
@@ -119,27 +138,69 @@ export default function HealthReport({
 
       </div>
 
-      {/* Reset */}
+      {/* Actions */}
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
 
         <button
-          onClick={onReset}
+
+          onClick={() =>
+            generateReportPDF(
+              prediction,
+              user
+            )
+          }
+
           className="
-          rounded-xl
-          bg-blue-600
-          px-6
-          py-3
-          font-semibold
-          transition
-          hover:bg-blue-500
+            flex
+            items-center
+            justify-center
+            gap-2
+            rounded-xl
+            border
+            border-blue-500/20
+            bg-blue-500/10
+            px-6
+            py-3
+            font-semibold
+            text-blue-300
+            transition
+            hover:bg-blue-500/20
           "
         >
+
+          <Download size={18} />
+
+          Download Health Report
+
+        </button>
+
+        <button
+
+          onClick={onReset}
+
+          className="
+            rounded-xl
+            bg-gradient-to-r
+            from-blue-600
+            to-cyan-500
+            px-6
+            py-3
+            font-semibold
+            text-white
+            transition
+            hover:opacity-90
+          "
+        >
+
           Analyze Again
+
         </button>
 
       </div>
 
     </GlassCard>
+
   );
+
 }
