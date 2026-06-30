@@ -1,159 +1,163 @@
-import { useEffect, useState } from "react";
 import {
   Brain,
   Search,
-  Database,
+  Activity,
+  FileText,
   CheckCircle2,
-  Loader2,
 } from "lucide-react";
+
+import { useEffect, useState } from "react";
 
 const steps = [
   {
     icon: Brain,
-    title: "Understanding your symptoms",
+    text: "Extracting symptoms",
   },
   {
     icon: Search,
-    title: "Semantic symptom matching",
+    text: "Running semantic search",
   },
   {
-    icon: Database,
-    title: "Running disease prediction model",
+    icon: Activity,
+    text: "Matching disease patterns",
+  },
+  {
+    icon: FileText,
+    text: "Generating medical report",
   },
 ];
 
 export default function LoadingCard() {
-  const [currentStep, setCurrentStep] = useState(0);
+
+  const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentStep((prev) =>
-        prev < steps.length - 1 ? prev + 1 : prev
-      );
-    }, 900);
 
-    return () => clearInterval(timer);
+    const interval = setInterval(() => {
+
+      setActiveStep((previous) => {
+
+        if (previous >= steps.length - 1) {
+          return previous;
+        }
+
+        return previous + 1;
+
+      });
+
+    }, 700);
+
+    return () => clearInterval(interval);
+
   }, []);
 
   return (
-    <div
-      className="
-      rounded-3xl
-      border
-      border-white/10
-      bg-white/5
-      p-10
-      backdrop-blur-xl
-      "
-    >
-      <div className="text-center">
 
-        <Loader2
-          size={52}
-          className="
-          mx-auto
-          animate-spin
-          text-blue-400
-          "
-        />
+    <div className="overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-xl">
 
-        <h2 className="mt-6 text-3xl font-bold">
+      {/* Header */}
 
-          AI is analyzing your symptoms
+      <div className="border-b border-slate-800 px-8 py-6">
 
-        </h2>
+        <div className="flex items-center gap-4">
 
-        <p className="mt-3 text-slate-400">
+          <div className="flex h-12 w-12 animate-pulse items-center justify-center rounded-xl bg-blue-600">
 
-          Please wait while MediVerse processes your input.
+            <Brain className="text-white" size={24} />
 
-        </p>
+          </div>
+
+          <div>
+
+            <h3 className="text-xl font-bold text-white">
+
+              AI Analysis in Progress
+
+            </h3>
+
+            <p className="text-sm text-slate-400">
+
+              MediVerse is analyzing your symptoms...
+
+            </p>
+
+          </div>
+
+        </div>
 
       </div>
 
-      <div className="mt-10 space-y-4">
+      {/* Steps */}
+
+      <div className="space-y-3 p-8">
 
         {steps.map((step, index) => {
 
           const Icon = step.icon;
 
-          const completed = index < currentStep;
+          const completed = index < activeStep;
 
-          const active = index === currentStep;
+          const current = index === activeStep;
 
           return (
+
             <div
-              key={step.title}
-              className="
-              flex
-              items-center
-              justify-between
-              rounded-2xl
-              border
-              border-white/10
-              bg-white/5
-              px-6
-              py-5
-              "
+              key={step.text}
+              className={`
+                flex items-center gap-4 rounded-2xl p-4 transition-all duration-500
+
+                ${
+                  completed
+                    ? "bg-green-500/10"
+                    : current
+                    ? "bg-blue-500/10"
+                    : "bg-slate-800"
+                }
+              `}
             >
-              <div className="flex items-center gap-4">
-
-                <Icon
-                  size={22}
-                  className="text-blue-400"
-                />
-
-                <span className="font-medium">
-
-                  {step.title}
-
-                </span>
-
-              </div>
 
               {completed ? (
 
                 <CheckCircle2
-                  size={22}
                   className="text-green-400"
-                />
-
-              ) : active ? (
-
-                <Loader2
                   size={22}
-                  className="
-                  animate-spin
-                  text-blue-400
-                  "
                 />
 
               ) : (
 
-                <div
-                  className="
-                  h-5
-                  w-5
-                  rounded-full
-                  border
-                  border-slate-500
-                  "
+                <Icon
+                  size={22}
+                  className={
+                    current
+                      ? "animate-pulse text-blue-400"
+                      : "text-slate-500"
+                  }
                 />
 
               )}
 
+              <span
+                className={
+                  completed
+                    ? "text-green-300"
+                    : current
+                    ? "text-blue-300"
+                    : "text-slate-400"
+                }
+              >
+                {step.text}
+              </span>
+
             </div>
+
           );
+
         })}
 
       </div>
 
-      <p className="mt-8 text-center text-sm text-slate-500">
-
-        Average analysis time: less than 3 seconds
-
-      </p>
-
     </div>
+
   );
+
 }

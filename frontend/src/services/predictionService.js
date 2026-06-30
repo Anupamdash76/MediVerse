@@ -1,8 +1,8 @@
 import api from "./api";
 
 export async function predictDisease(symptoms) {
-  const response = await api.post("/api/v1/predict", {
-    symptoms,
+ const response = await api.post("/predict", {
+  symptoms,
   });
 
   return response.data;

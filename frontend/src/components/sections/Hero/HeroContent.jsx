@@ -1,5 +1,16 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+
+import {
+  ArrowRight,
+  Sparkles,
+  LayoutDashboard,
+  UserPlus,
+  Play,
+} from "lucide-react";
+
+import { AuthContext } from "../../../context/AuthContext";
 
 import Button from "../../common/Button";
 
@@ -19,17 +30,27 @@ const stats = [
 ];
 
 export default function HeroContent() {
+
+  const navigate = useNavigate();
+
+  const { isAuthenticated } = useContext(AuthContext);
+
   const scrollToDiagnosis = () => {
+
     const section = document.getElementById("diagnosis");
 
     if (section) {
+
       section.scrollIntoView({
         behavior: "smooth",
       });
+
     }
+
   };
 
   return (
+
     <div className="max-w-2xl">
 
       {/* Badge */}
@@ -39,6 +60,7 @@ export default function HeroContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+
         <div
           className="
             inline-flex
@@ -55,10 +77,13 @@ export default function HeroContent() {
             backdrop-blur
           "
         >
+
           <Sparkles size={16} />
 
           AI Powered Healthcare
+
         </div>
+
       </motion.div>
 
       {/* Heading */}
@@ -80,7 +105,10 @@ export default function HeroContent() {
           lg:text-7xl
         "
       >
-        Your Personal
+
+        {isAuthenticated
+          ? "Welcome Back"
+          : "Your Personal"}
 
         <br />
 
@@ -94,8 +122,13 @@ export default function HeroContent() {
             text-transparent
           "
         >
-          AI Health Assistant
+
+          {isAuthenticated
+            ? "Continue Your Health Journey"
+            : "AI Health Assistant"}
+
         </span>
+
       </motion.h1>
 
       {/* Description */}
@@ -114,9 +147,11 @@ export default function HeroContent() {
           text-slate-400
         "
       >
-        Describe your symptoms naturally and receive intelligent
-        disease prediction powered by semantic search,
-        sentence transformers, and machine learning.
+
+        {isAuthenticated
+          ? "Access your dashboard, review previous diagnoses, update your health profile and continue using MediVerse."
+          : "Describe your symptoms naturally and receive intelligent disease prediction powered by semantic search, sentence transformers and machine learning."}
+
       </motion.p>
 
       {/* Buttons */}
@@ -129,31 +164,65 @@ export default function HeroContent() {
         }}
         className="mt-10 flex flex-wrap gap-4"
       >
-        <Button onClick={scrollToDiagnosis} className="group">
-          Start Diagnosis
 
-          <ArrowRight
-            size={18}
-            className="
-              ml-2
-              transition-transform
-              duration-300
-              group-hover:translate-x-1
-            "
-          />
-        </Button>
+        {isAuthenticated ? (
 
-        <Button
-          variant="secondary"
-          onClick={() =>
-            window.scrollTo({
-              top: document.body.scrollHeight,
-              behavior: "smooth",
-            })
-          }
-        >
-          Learn More
-        </Button>
+          <>
+            <Button
+              onClick={() => navigate("/dashboard")}
+            >
+              <LayoutDashboard
+                size={18}
+                className="mr-2"
+              />
+
+              Dashboard
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() => navigate("/diagnosis")}
+            >
+              Start New Diagnosis
+            </Button>
+          </>
+
+        ) : (
+
+          <>
+            <Button
+              onClick={scrollToDiagnosis}
+            >
+              <Play
+                size={18}
+                className="mr-2"
+              />
+
+              Try Demo
+
+              <ArrowRight
+                size={18}
+                className="ml-2"
+              />
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() =>
+                navigate("/register")
+              }
+            >
+              <UserPlus
+                size={18}
+                className="mr-2"
+              />
+
+              Get Started
+            </Button>
+          </>
+
+        )}
+
       </motion.div>
 
       {/* Stats */}
@@ -167,23 +236,36 @@ export default function HeroContent() {
         className="
           mt-16
           grid
+          max-w-lg
           grid-cols-3
           gap-8
-          max-w-lg
         "
       >
+
         {stats.map((item) => (
+
           <div key={item.label}>
+
             <h3 className="text-4xl font-bold">
+
               {item.value}
+
             </h3>
 
             <p className="mt-2 text-slate-500">
+
               {item.label}
+
             </p>
+
           </div>
+
         ))}
+
       </motion.div>
+
     </div>
+
   );
+
 }
