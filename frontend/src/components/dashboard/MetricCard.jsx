@@ -36,23 +36,23 @@ export default function MetricCard({
         className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${gradients[color]}`}
       />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
 
-        <div>
+        <div className="min-w-0 flex-1">
 
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-xs sm:text-sm font-medium text-slate-500 truncate">
 
             {title}
 
           </p>
 
-          <h2 className="mt-4 text-4xl font-bold text-slate-900">
+          <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 truncate">
 
             {value}
 
           </h2>
 
-          <p className="mt-3 text-sm text-slate-400">
+          <p className="mt-1.5 text-xs sm:text-sm text-slate-400 truncate">
 
             {subtitle}
 
@@ -61,7 +61,7 @@ export default function MetricCard({
         </div>
 
         <div
-          className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r ${gradients[color]} text-white text-3xl shadow-lg`}
+          className={`flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r ${gradients[color]} text-white text-xl sm:text-3xl shadow-lg`}
         >
 
           {icon}

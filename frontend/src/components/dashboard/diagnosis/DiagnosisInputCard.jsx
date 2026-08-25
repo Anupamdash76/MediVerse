@@ -1,6 +1,9 @@
-import { Activity } from "lucide-react";
+import { useState } from "react";
+import { Activity, Sparkles } from "lucide-react";
 
 import ExamplePrompt from "./ExamplePrompt";
+import VoiceInputButton from "../../common/VoiceInputButton";
+import SymptomWizard from "./SymptomWizard";
 
 export default function DiagnosisInputCard({
   symptoms,
@@ -8,12 +11,18 @@ export default function DiagnosisInputCard({
   onSubmit,
   error,
 }) {
+  const [showWizard, setShowWizard] = useState(false);
+
+  const handleVoiceTranscript = (transcriptText) => {
+    setSymptoms((prev) => (prev ? `${prev} ${transcriptText}` : transcriptText));
+  };
+
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-10 shadow-sm">
+    <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-8 lg:p-10 shadow-sm">
 
       {/* Header */}
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
 
         <div className="rounded-2xl bg-blue-100 p-4">
 
@@ -43,18 +52,41 @@ export default function DiagnosisInputCard({
 
       </div>
 
-      {/* Textarea */}
+      {/* Textarea Label & Voice Button */}
 
       <div className="mt-8">
 
-        <label className="mb-3 block font-medium text-slate-700">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
 
-          Describe Your Symptoms
+          <label className="font-medium text-slate-700">
 
-        </label>
+            Describe Your Symptoms
+
+          </label>
+
+          <div className="flex items-center gap-2">
+
+            <VoiceInputButton onTranscript={handleVoiceTranscript} />
+
+            <button
+              type="button"
+              onClick={() => setShowWizard(!showWizard)}
+              className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+                showWizard
+                  ? "border-blue-600 bg-blue-600 text-white"
+                  : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+              }`}
+            >
+              <Sparkles size={14} />
+              {showWizard ? "Close Wizard" : "Launch Guided Wizard"}
+            </button>
+
+          </div>
+
+        </div>
 
         <textarea
-          rows={7}
+          rows={6}
           value={symptoms}
           onChange={(e) =>
             setSymptoms(e.target.value)
@@ -64,6 +96,18 @@ export default function DiagnosisInputCard({
         />
 
       </div>
+
+      {/* Guided Symptom Questionnaire Wizard */}
+
+      {showWizard && (
+        <SymptomWizard
+          initialSymptoms={symptoms}
+          onComplete={(enrichedText) => {
+            setSymptoms(enrichedText);
+            setShowWizard(false);
+          }}
+        />
+      )}
 
       {/* Error */}
 
@@ -126,13 +170,18 @@ export default function DiagnosisInputCard({
         <button
           onClick={onSubmit}
           className="
+            w-full
+            sm:w-auto
             rounded-2xl
             bg-gradient-to-r
             from-blue-600
             to-cyan-500
-            px-10
-            py-4
-            text-lg
+            px-6
+            sm:px-10
+            py-3.5
+            sm:py-4
+            text-base
+            sm:text-lg
             font-semibold
             text-white
             shadow-lg

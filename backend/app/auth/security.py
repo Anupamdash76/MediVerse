@@ -1,7 +1,7 @@
+import bcrypt
 from datetime import datetime, timedelta, timezone
 
 from jose import jwt
-from passlib.context import CryptContext
 
 from app.config.settings import (
     JWT_SECRET_KEY,
@@ -9,17 +9,23 @@ from app.config.settings import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
 )
 
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto",
-)
+
+def _safe_pwd_bytes(password: str) -> bytes:
+    """
+    Safely encode and truncate password to max 72 UTF-8 bytes for bcrypt.
+    """
+    if not password:
+        return b""
+    return str(password).encode('utf-8')[:72]
 
 
 def hash_password(password: str) -> str:
     """
-    Hash a plain-text password.
+    Hash a plain-text password using native bcrypt.
     """
-    return pwd_context.hash(password)
+    pwd_bytes = _safe_pwd_bytes(password)
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(pwd_bytes, salt).decode('utf-8')
 
 
 def verify_password(
@@ -27,12 +33,15 @@ def verify_password(
     hashed_password: str,
 ) -> bool:
     """
-    Verify a password against its hash.
+    Verify a password against its hash using native bcrypt.
+    Never raises ValueError.
     """
-    return pwd_context.verify(
-        plain_password,
-        hashed_password,
-    )
+    try:
+        pwd_bytes = _safe_pwd_bytes(plain_password)
+        hash_bytes = str(hashed_password).encode('utf-8')
+        return bcrypt.checkpw(pwd_bytes, hash_bytes)
+    except Exception:
+        return False
 
 
 def create_access_token(

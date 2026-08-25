@@ -24,6 +24,12 @@ class PredictionItemResponse(BaseModel):
 
     disclaimer: str
 
+    recommended_tests: List[str] = []
+
+    probability: float = 0.0
+
+    ensemble_source: str = "XGBoost Machine Learning"
+
 
 class PredictResponse(BaseModel):
 

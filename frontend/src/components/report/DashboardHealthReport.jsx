@@ -131,14 +131,6 @@ export default function DashboardHealthReport({
 
       </div>
 
-      {/* Matched Symptoms */}
-
-      <DashboardMatchedSymptoms
-        symptoms={
-          prediction.matched_symptoms
-        }
-      />
-
       {/* Unknown Symptoms */}
 
       <DashboardUnknownSymptoms

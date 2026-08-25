@@ -6,23 +6,12 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Node modules & duplicates
-node_modules/
-backend/node_modules/
-frontend/node_modules/
-scratch/
-Mediverse-backend/
-Mediverse-frontend/
-mediverse-space/
-
 # =====================================================
 # Virtual Environment
 # =====================================================
 venv/
 .venv/
-deploy_env/
 backend/venv/
-backend/deploy_env/
 
 # =====================================================
 # Environment Variables
@@ -60,12 +49,6 @@ Thumbs.db
 htmlcov/
 
 # =====================================================
-# React
-# =====================================================
-frontend/node_modules/
-frontend/dist/
-
-# =====================================================
 # Python Build
 # =====================================================
 build/
@@ -73,54 +56,41 @@ dist/
 *.egg-info/
 
 # =====================================================
+# Backend Artifacts
+# =====================================================
+backend/artifacts/*
+!backend/artifacts/feature_names.pkl
+!backend/artifacts/label_encoder.pkl
+
+# =====================================================
 # Backend Models
 # =====================================================
 backend/models/*
-!backend/models/.gitkeep
 
-backend/artifacts/*
-!backend/artifacts/.gitkeep
+# Keep required models
+!backend/models/feature_names.pkl
+!backend/models/label_encoder.pkl
+!backend/models/symptom_embeddings.pt
+!backend/models/xgboost.json
+
+# Ignore large models
+backend/models/random_forest.pkl
+backend/models/xgboost.pkl
+backend/models/features.pkl
+backend/models/symptom_list.pkl
 
 # =====================================================
-# Internal Guides & Performance Reports (DO NOT PUSH)
+# Research
 # =====================================================
-mediverse_master_guide*
-model_performance_report*
-pipeline_execution_guide*
-docs/
 research/
 
 # =====================================================
-# Large ML Files
+# Frontend (if present)
 # =====================================================
-*.pkl
-*.joblib
-*.pt
-*.pth
-*.onnx
-*.h5
-*.keras
-*.bin
-*.ckpt
-*.npy
-*.npz
-
-# Large CSV/XLSX
-*.csv
-*.xlsx
-
-# XGBoost
-*.json
+frontend/node_modules/
+frontend/dist/
 
 # =====================================================
-# Keep only required backend model
+# Misc
 # =====================================================
-!backend/models/xgboost.json
-!backend/models/symptom_embeddings.pt
-!backend/models/feature_names.pkl
-!backend/models/label_encoder.pkl
-
-# =====================================================
-# Keep data files used by backend
-# =====================================================
-!backend/app/data/diseases.json
+.git/

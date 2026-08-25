@@ -97,12 +97,6 @@ export default function HealthReport({
 
       </div>
 
-      {/* Matched Symptoms */}
-
-      <MatchedSymptoms
-        symptoms={prediction.matched_symptoms}
-      />
-
       {/* Unknown Symptoms */}
 
       <UnknownSymptoms

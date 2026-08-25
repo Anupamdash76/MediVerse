@@ -8,7 +8,6 @@ Contains:
 """
 
 import os
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,25 +22,25 @@ TOP_K = 3
 
 # Minimum cosine similarity score
 # required for a symptom to be considered a match.
-SIMILARITY_THRESHOLD = 0.75
+SIMILARITY_THRESHOLD = 0.55
 
 
 # =====================================================
 # Database Configuration
 # =====================================================
 
-MONGODB_URL = os.getenv("MONGODB_URL")
+MONGODB_URL = os.getenv("MONGODB_URL", "")
 
-DATABASE_NAME = os.getenv("DATABASE_NAME")
+DATABASE_NAME = os.getenv("DATABASE_NAME", "mediverse")
 
 
 # =====================================================
 # JWT Configuration
 # =====================================================
 
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "change_this_secret_in_production")
 
-JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(
     os.getenv(

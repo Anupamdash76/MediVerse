@@ -4,7 +4,7 @@ import Section from "../../common/Section";
 
 import TechnologyCard from "./TechnologyCard";
 
-import { technologies } from "./technologyData";
+import { technologies } from "./TechnologyData";
 
 export default function Technology() {
   return (

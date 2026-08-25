@@ -39,7 +39,7 @@ async def predict(
 
     try:
 
-        result = prediction_service.predict(
+        result = await prediction_service.predict(
             request.symptoms
         )
 
@@ -60,6 +60,12 @@ async def predict(
                 severity=item["severity"],
 
                 disclaimer=item["disclaimer"],
+
+                recommended_tests=item.get("recommended_tests", []),
+
+                probability=item.get("probability", 0.0),
+
+                ensemble_source=item.get("ensemble_source", "XGBoost Machine Learning"),
 
             )
 

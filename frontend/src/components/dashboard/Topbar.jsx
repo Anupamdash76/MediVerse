@@ -9,9 +9,10 @@ import {
   FiActivity,
   FiUser,
   FiLogOut,
+  FiMenu,
 } from "react-icons/fi";
 
-export default function Topbar() {
+export default function Topbar({ onMenuToggle }) {
 
   const { user, logout } = useAuth();
 
@@ -83,38 +84,50 @@ export default function Topbar() {
 
   return (
 
-    <header className="border-b border-slate-200 bg-white px-10 py-6">
+    <header className="border-b border-slate-200 bg-white px-4 sm:px-8 py-3.5 sm:py-5 shadow-xs">
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
 
-        {/* Greeting */}
+        {/* Mobile Hamburger & Greeting */}
 
-        <div>
+        <div className="flex items-center gap-3">
 
-          <h1 className="text-4xl font-bold text-slate-800">
+          <button
+            onClick={onMenuToggle}
+            className="lg:hidden rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+            aria-label="Open navigation menu"
+          >
+            <FiMenu size={22} />
+          </button>
 
-            {greeting},
+          <div>
 
-            <span className="text-blue-600">
+            <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-slate-800 leading-tight">
 
-              {" "}
-              {user?.name?.split(" ")[0]}
+              {greeting},
 
-            </span>
+              <span className="text-blue-600">
 
-            👋
+                {" "}
+                {user?.name?.split(" ")[0]}
 
-          </h1>
+              </span>
 
-          <p className="mt-2 text-slate-500">
+              👋
 
-            {today}
+            </h1>
 
-          </p>
+            <p className="mt-0.5 text-xs sm:text-sm text-slate-500">
+
+              {today}
+
+            </p>
+
+          </div>
 
         </div>
 
-        {/* User */}
+        {/* User Dropdown */}
 
         <div
           ref={dropdownRef}
@@ -128,33 +141,40 @@ export default function Topbar() {
             className="
               flex
               items-center
-              gap-4
+              gap-2.5
+              sm:gap-4
               rounded-2xl
               border
               border-slate-200
               bg-white
-              px-4
-              py-3
-              shadow-sm
+              p-2
+              sm:px-4
+              sm:py-3
+              shadow-xs
               transition-all
               hover:shadow-md
+              cursor-pointer
             "
           >
 
             <div
               className="
                 flex
-                h-14
-                w-14
+                h-10
+                w-10
+                sm:h-12
+                sm:w-12
                 items-center
                 justify-center
                 rounded-full
                 bg-gradient-to-r
                 from-blue-600
                 to-cyan-500
-                text-xl
+                text-base
+                sm:text-lg
                 font-bold
                 text-white
+                shrink-0
               "
             >
 
@@ -162,9 +182,9 @@ export default function Topbar() {
 
             </div>
 
-            <div className="text-left">
+            <div className="hidden sm:block text-left">
 
-              <h3 className="font-semibold text-slate-900">
+              <h3 className="font-semibold text-slate-900 text-sm sm:text-base leading-tight">
 
                 {user?.name}
 
@@ -172,11 +192,11 @@ export default function Topbar() {
 
               <span
                 className="
-                  mt-1
+                  mt-0.5
                   inline-block
                   rounded-full
                   bg-blue-100
-                  px-2.5
+                  px-2
                   py-0.5
                   text-xs
                   font-medium

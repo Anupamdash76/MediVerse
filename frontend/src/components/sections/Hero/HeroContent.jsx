@@ -16,11 +16,11 @@ import Button from "../../common/Button";
 
 const stats = [
   {
-    value: "41",
+    value: "300+",
     label: "Diseases",
   },
   {
-    value: "132",
+    value: "280+",
     label: "Symptoms",
   },
   {
@@ -208,6 +208,7 @@ export default function HeroContent() {
 
             <Button
               variant="secondary"
+              className="hidden sm:inline-flex"
               onClick={() =>
                 navigate("/register")
               }

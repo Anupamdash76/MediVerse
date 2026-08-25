@@ -11,3 +11,8 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+
+class MessageResponse(BaseModel):
+    message: str
+    status: str = "success"
