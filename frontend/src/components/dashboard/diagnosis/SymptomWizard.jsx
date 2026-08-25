@@ -101,7 +101,7 @@ export default function SymptomWizard({ initialSymptoms, onComplete }) {
     const formattedParts = [];
     if (initialSymptoms) formattedParts.push(initialSymptoms.trim());
 
-    Object.entries(answers).forEach(([key, value]) => {
+    Object.entries(answers).forEach(([, value]) => {
       if (Array.isArray(value) && value.length > 0) {
         formattedParts.push(`Associated symptoms: ${value.join(", ")}`);
       } else if (typeof value === "string") {

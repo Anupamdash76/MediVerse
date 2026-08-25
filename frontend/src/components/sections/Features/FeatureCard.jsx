@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { MessageSquareText, Cpu, Stethoscope, FileCheck } from "lucide-react";
 
 export default function FeatureCard({
   stepNumber,

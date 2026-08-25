@@ -1,20 +1,20 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 class ProfileResponse(BaseModel):
-    age: int
+    age: Optional[int] = None
 
-    gender: str
+    gender: Optional[str] = None
 
-    height_cm: float
+    height_cm: Optional[float] = None
 
-    weight_kg: float
+    weight_kg: Optional[float] = None
 
-    blood_group: str
+    blood_group: Optional[str] = None
 
-    allergies: List[str]
+    allergies: List[str] = []
 
-    chronic_diseases: List[str]
+    chronic_diseases: List[str] = []
 
-    current_medications: List[str]
+    current_medications: List[str] = []

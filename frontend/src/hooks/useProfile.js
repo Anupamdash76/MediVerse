@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import {
   getProfile,
@@ -8,35 +8,27 @@ import {
 
 export default function useProfile() {
   const [profile, setProfile] = useState(null);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState("");
+  const [profileExists, setProfileExists] = useState(false);
 
-  const [profileExists, setProfileExists] =
-    useState(false);
-
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
-  async function loadProfile() {
+  const loadProfile = useCallback(async () => {
     try {
       setLoading(true);
-
       const data = await getProfile();
-
       setProfile(data);
-
       setProfileExists(true);
-
       setError("");
     } catch {
       setProfileExists(false);
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
 
   async function saveProfile(data) {
     try {
@@ -50,14 +42,12 @@ export default function useProfile() {
       }
 
       setProfile(response);
-
       return true;
     } catch (err) {
       setError(
         err.response?.data?.detail ||
           "Failed to save profile."
       );
-
       return false;
     }
   }

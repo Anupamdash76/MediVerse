@@ -4,7 +4,6 @@ import useAuth from "../../hooks/useAuth";
 import generateReportPDF from "../../utils/generateReportPDF";
 
 import DashboardDiseaseCard from "./DashboardDiseaseCard";
-import DashboardMatchedSymptoms from "./DashboardMatchedSymptoms";
 import DashboardUnknownSymptoms from "./DashboardUnknownSymptoms";
 import DashboardAnalysisStatus from "./DashboardAnalysisStatus";
 

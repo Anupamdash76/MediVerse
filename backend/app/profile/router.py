@@ -66,11 +66,7 @@ async def get_profile(
     )
 
     if not profile:
-
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Profile not found.",
-        )
+        return ProfileResponse()
 
     return ProfileResponse(**{
         key: value

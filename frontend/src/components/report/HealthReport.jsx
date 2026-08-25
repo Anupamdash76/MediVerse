@@ -19,10 +19,10 @@ export default function HealthReport({
   prediction,
   onReset,
 }) {
-  if (!prediction) return null;
-
   const { user } = useAuth();
   const [selectedDisease, setSelectedDisease] = useState(0);
+
+  if (!prediction) return null;
 
   return (
     <GlassCard className="mt-8 p-6 sm:p-8 bg-white border border-slate-200 shadow-md rounded-2xl">

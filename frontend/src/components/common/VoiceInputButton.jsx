@@ -3,17 +3,16 @@ import { Mic, MicOff, Volume2 } from "lucide-react";
 
 export default function VoiceInputButton({ onTranscript }) {
   const [isListening, setIsListening] = useState(false);
-  const [supported, setSupported] = useState(true);
+  const [supported] = useState(() => {
+    return typeof window !== "undefined" && !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  });
   const recognitionRef = useRef(null);
 
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (!SpeechRecognition) {
-      setSupported(false);
-      return;
-    }
+    if (!SpeechRecognition) return;
 
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
