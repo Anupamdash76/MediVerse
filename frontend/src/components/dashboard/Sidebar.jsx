@@ -43,15 +43,15 @@ export default function Sidebar({ open, setOpen }) {
   }
 
   const sidebarContent = (
-    <div className="flex h-full flex-col bg-slate-900 text-white shadow-2xl">
+    <div className="flex h-full flex-col bg-white border-r border-slate-200 text-slate-800 shadow-xs">
       {/* Logo Header */}
-      <div className="flex items-center justify-between px-6 py-6 border-b border-slate-800">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-            Medi<span className="text-teal-400">Verse</span>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            Medi<span className="text-blue-600">Verse</span>
           </h1>
-          <p className="text-slate-400 mt-1 text-xs sm:text-sm">
-            AI Healthcare Assistant
+          <p className="text-slate-500 mt-0.5 text-xs font-medium">
+            Digital Health Portal
           </p>
         </div>
 
@@ -59,7 +59,7 @@ export default function Sidebar({ open, setOpen }) {
         {setOpen && (
           <button
             onClick={() => setOpen(false)}
-            className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
             aria-label="Close menu"
           >
             <FiX size={22} />
@@ -68,17 +68,17 @@ export default function Sidebar({ open, setOpen }) {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+      <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto">
         {menuItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             onClick={() => setOpen && setOpen(false)}
             className={({ isActive }) =>
-              `flex items-center gap-4 rounded-xl px-4 py-3.5 transition-all duration-200 ${
+              `flex items-center gap-3.5 rounded-xl px-4 py-3 transition-all duration-200 ${
                 isActive
-                  ? "bg-blue-600 font-semibold text-white shadow-lg shadow-blue-900/40"
-                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  ? "bg-blue-50 text-blue-600 font-semibold border-l-4 border-blue-600 shadow-xs"
+                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
               }`
             }
           >
@@ -91,13 +91,13 @@ export default function Sidebar({ open, setOpen }) {
       </nav>
 
       {/* Logout */}
-      <div className="border-t border-slate-800 p-4">
+      <div className="border-t border-slate-200 p-4">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-3 rounded-xl bg-red-500/90 py-3 font-medium text-white transition hover:bg-red-600 shadow-md"
+          className="w-full flex items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-red-50 hover:text-red-600 hover:border-red-200 shadow-xs cursor-pointer"
         >
           <FiLogOut size={18} />
-          Logout
+          Sign Out
         </button>
       </div>
     </div>

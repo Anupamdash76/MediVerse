@@ -4,14 +4,18 @@ export default function Badge({
   return (
     <span
       className="
+      inline-flex
+      items-center
+      gap-1.5
       rounded-full
       border
-      border-blue-500/30
-      bg-blue-500/10
-      px-4
+      border-blue-200
+      bg-blue-50
+      px-3.5
       py-1
-      text-sm
-      text-blue-300
+      text-xs
+      font-semibold
+      text-blue-700
       "
     >
       {children}

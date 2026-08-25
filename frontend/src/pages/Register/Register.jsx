@@ -54,50 +54,46 @@ export default function Register() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-slate-950 p-4 font-sans text-slate-100">
-      
-      {/* Background Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-cyan-600/20 blur-3xl pointer-events-none" />
-
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/80 p-8 shadow-2xl backdrop-blur-2xl">
+    <div className="relative flex min-h-screen items-center justify-center bg-slate-50 p-4 font-sans text-slate-900">
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-md">
         
         {/* Back Link */}
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition mb-6">
+        <Link to="/" className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition mb-6">
           <ArrowLeft size={16} />
           Back to Home
         </Link>
 
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/20">
-            <UserPlus size={28} />
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm">
+            <UserPlus size={24} />
           </div>
-          <h1 className="text-3xl font-bold text-white">Create Account</h1>
-          <p className="mt-1 text-sm text-slate-400">Join MediVerse to unlock AI-powered diagnostics</p>
+          <h1 className="text-2xl font-bold text-slate-900">Create Patient Account</h1>
+          <p className="mt-1 text-xs text-slate-500">Join MediVerse to unlock clinical AI symptom screening</p>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="mt-6 flex flex-col gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
-            <div className="flex items-center gap-2 font-medium">
-              <AlertCircle size={18} className="shrink-0" />
+          <div className="mt-5 flex flex-col gap-2 rounded-xl border border-red-200 bg-red-50 p-3.5 text-xs font-semibold text-red-700">
+            <div className="flex items-center gap-2">
+              <AlertCircle size={16} className="shrink-0" />
               <span>{error}</span>
             </div>
 
             {isDuplicateEmail && (
-              <div className="mt-2 flex flex-col gap-2 pt-2 border-t border-red-500/20">
-                <p className="text-xs text-slate-300">Would you like to log in or reset your password for this email?</p>
+              <div className="mt-2 flex flex-col gap-2 pt-2 border-t border-red-200">
+                <p className="text-xs text-slate-600">Already registered? Log in or reset your password below.</p>
                 <div className="flex gap-2">
                   <Link
                     to="/login"
-                    className="flex-1 rounded-lg bg-blue-600/80 py-1.5 text-center text-xs font-semibold text-white hover:bg-blue-600"
+                    className="flex-1 rounded-lg bg-blue-600 py-1.5 text-center text-xs font-semibold text-white hover:bg-blue-700"
                   >
-                    Go to Login
+                    Go to Sign In
                   </Link>
                   <button
                     type="button"
                     onClick={() => setIsForgotOpen(true)}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-slate-800 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-slate-700"
+                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                   >
                     <KeyRound size={14} />
                     Forgot Password?
@@ -111,14 +107,14 @@ export default function Register() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label className="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400">Full Name</label>
+            <label className="block mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-600">Full Name</label>
             <div className="relative">
-              <User className="absolute left-3.5 top-3.5 text-slate-500" size={18} />
+              <User className="absolute left-3.5 top-3.5 text-slate-400" size={18} />
               <input
                 name="name"
                 required
-                placeholder="John Doe"
-                className="w-full rounded-xl border border-slate-700 bg-slate-800/60 py-3 pl-11 pr-4 text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                placeholder="Your name"
+                className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
                 value={form.name}
                 onChange={handleChange}
               />
@@ -126,15 +122,15 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400">Email Address</label>
+            <label className="block mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-600">Email Address</label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-3.5 text-slate-500" size={18} />
+              <Mail className="absolute left-3.5 top-3.5 text-slate-400" size={18} />
               <input
                 name="email"
                 type="email"
                 required
                 placeholder="name@example.com"
-                className="w-full rounded-xl border border-slate-700 bg-slate-800/60 py-3 pl-11 pr-4 text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
                 value={form.email}
                 onChange={handleChange}
               />
@@ -142,15 +138,15 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400">Password</label>
+            <label className="block mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-600">Password</label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-3.5 text-slate-500" size={18} />
+              <Lock className="absolute left-3.5 top-3.5 text-slate-400" size={18} />
               <input
                 name="password"
                 type="password"
                 required
                 placeholder="Min 8 characters"
-                className="w-full rounded-xl border border-slate-700 bg-slate-800/60 py-3 pl-11 pr-4 text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
                 value={form.password}
                 onChange={handleChange}
               />
@@ -160,17 +156,17 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3.5 font-semibold text-white transition hover:opacity-95 disabled:opacity-50 shadow-lg shadow-cyan-500/30"
+            className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-sm text-white transition hover:bg-blue-700 disabled:opacity-50 shadow-sm cursor-pointer"
           >
-            {loading ? "Creating Account..." : "Create Account"}
+            {loading ? "Creating Account..." : "Create Free Account"}
           </button>
         </form>
 
         {/* Footer */}
-        <p className="mt-6 text-center text-sm text-slate-400">
+        <p className="mt-6 text-center text-xs text-slate-500">
           Already have an account?{" "}
-          <Link to="/login" className="font-semibold text-cyan-400 hover:text-cyan-300 underline">
-            Log in here
+          <Link to="/login" className="font-bold text-blue-600 hover:underline">
+            Sign in here
           </Link>
         </p>
 

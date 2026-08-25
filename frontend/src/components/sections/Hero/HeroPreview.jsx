@@ -1,241 +1,67 @@
 import { motion } from "framer-motion";
 
-import {
-  Brain,
-  CheckCircle2,
-  Sparkles,
-  Search,
-  Database,
-  Cpu,
-} from "lucide-react";
-
-import GlassCard from "../../common/GlassCard";
-
-const pipeline = [
-  {
-    icon: Brain,
-    title: "Natural Language Parsing",
-  },
-  {
-    icon: Search,
-    title: "Semantic Matching",
-  },
-  {
-    icon: Database,
-    title: "Feature Engineering",
-  },
-  {
-    icon: Cpu,
-    title: "XGBoost Prediction",
-  },
-];
-
 export default function HeroPreview() {
   return (
     <motion.div
-      initial={{ opacity: 0, x: 40 }}
+      initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{
-        duration: 0.8,
-        delay: 0.4,
-      }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      className="relative max-w-md mx-auto"
     >
-      <GlassCard className="relative overflow-hidden p-8">
-
-        {/* Background Glow */}
-
-        <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl" />
-
-        {/* Header */}
-
-        <div className="relative flex items-center gap-4">
-
-          <div className="rounded-2xl bg-blue-500/10 p-4">
-
-            <Brain
-              size={28}
-              className="text-blue-400"
-            />
-
-          </div>
-
+      <div className="rounded-3xl border border-slate-200/90 bg-white p-7 shadow-lg shadow-slate-200/50 space-y-6">
+        {/* Header Label */}
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div>
-
-            <h2 className="text-2xl font-bold">
-
-              AI Analysis
-
-            </h2>
-
-            <p className="text-sm text-slate-400">
-
-              Real-time prediction workflow
-
-            </p>
-
+            <h3 className="font-extrabold text-slate-900 text-sm tracking-tight">Clinical Assessment Output</h3>
+            <p className="text-xs text-slate-400 font-medium mt-0.5">Real-Time ML Model Inference</p>
           </div>
 
+          <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[11px] font-bold text-emerald-700">
+            Verified
+          </span>
         </div>
 
-        {/* Pipeline */}
-
-        <div className="mt-10 space-y-5">
-
-          {pipeline.map((step, index) => {
-            const Icon = step.icon;
-
-            return (
-              <motion.div
-                key={step.title}
-                initial={{
-                  opacity: 0,
-                  x: 20,
-                }}
-                animate={{
-                  opacity: 1,
-                  x: 0,
-                }}
-                transition={{
-                  delay: 0.6 + index * 0.15,
-                }}
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  rounded-2xl
-                  border
-                  border-white/10
-                  bg-white/5
-                  px-5
-                  py-4
-                "
-              >
-                <div className="flex items-center gap-4">
-
-                  <Icon
-                    size={20}
-                    className="text-blue-400"
-                  />
-
-                  <span className="text-slate-200">
-
-                    {step.title}
-
-                  </span>
-
-                </div>
-
-                <CheckCircle2
-                  size={20}
-                  className="text-green-400"
-                />
-
-              </motion.div>
-            );
-          })}
-
+        {/* Patient Query */}
+        <div>
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+            Patient Symptom Input:
+          </span>
+          <p className="text-sm font-medium text-slate-800 leading-relaxed italic">
+            "High fever for 3 days with dry cough and mild shortness of breath"
+          </p>
         </div>
 
-        {/* Status */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          transition={{
-            delay: 1.3,
-          }}
-          className="
-            mt-8
-            rounded-2xl
-            border
-            border-green-500/20
-            bg-green-500/10
-            p-5
-          "
-        >
-          <div className="flex items-center gap-3">
-
-            <Sparkles
-              size={22}
-              className="text-green-400"
-            />
-
-            <div>
-
-              <h3 className="font-semibold">
-
-                Analysis Ready
-
-              </h3>
-
-              <p className="text-sm text-slate-400">
-
-                NLP pipeline initialized successfully
-
-              </p>
-
-            </div>
-
-          </div>
-        </motion.div>
-
-        {/* Bottom Stats */}
-
-        <div className="mt-8 grid grid-cols-2 gap-5">
-
-          <div
-            className="
-              rounded-2xl
-              border
-              border-white/10
-              bg-white/5
-              p-5
-            "
-          >
-            <h3 className="text-3xl font-bold">
-
-              41
-
-            </h3>
-
-            <p className="mt-2 text-slate-400">
-
-              Diseases Supported
-
-            </p>
-
+        {/* Condition Match */}
+        <div className="pt-2">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Matched Condition
+            </span>
+            <span className="text-xs font-extrabold text-blue-600">
+              91.8% Diagnostic Match
+            </span>
           </div>
 
-          <div
-            className="
-              rounded-2xl
-              border
-              border-white/10
-              bg-white/5
-              p-5
-            "
-          >
-            <h3 className="text-3xl font-bold">
+          <h4 className="text-xl font-extrabold text-slate-900 leading-tight">
+            Viral Respiratory Infection
+          </h4>
 
-              132
-
-            </h3>
-
-            <p className="mt-2 text-slate-400">
-
-              Symptoms Tracked
-
-            </p>
-
+          <div className="mt-3 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+            <div className="h-full bg-blue-600 rounded-full" style={{ width: "91.8%" }} />
           </div>
-
         </div>
 
-      </GlassCard>
+        {/* Doctor Referral */}
+        <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-medium">
+          <span className="text-slate-600">
+            Recommended Care: <strong className="text-slate-900 font-bold">General Physician</strong>
+          </span>
+
+          <span className="text-blue-600 font-bold">
+            Live Preview
+          </span>
+        </div>
+      </div>
     </motion.div>
   );
 }

@@ -1,22 +1,16 @@
 import Layout from "../../components/layout/Layout";
-
 import Hero from "../../components/sections/Hero/Hero";
-import Diagnosis from "../../components/sections/Diagnosis/Diagnosis";
 import Technology from "../../components/sections/Technology/Technology";
-import Features from "../../components/sections/Features/Features";
+import FaqSection from "../../components/sections/Faq/FaqSection";
 
 export default function Home() {
   return (
     <Layout>
-
-      <Hero />
-
-      <Features />
-      
-      <Technology />
-      
-      <Diagnosis />
-
+      <div className="mesh-gradient-bg min-h-screen">
+        <Hero />
+        <Technology />
+        <FaqSection />
+      </div>
     </Layout>
   );
 }
