@@ -8,6 +8,7 @@ import {
 import SeverityBadge from "./SeverityBadge";
 
 function formatTitle(text) {
+  if (!text) return "Condition Analysis";
   return text
     .replaceAll("_", " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
@@ -64,7 +65,9 @@ export default function DiseaseCard({
               {formatTitle(disease.disease)}
             </h3>
             <p className="text-xs text-slate-500 font-medium">
-              Match Probability: {(disease.confidence * 100).toFixed(1)}%
+              Match Probability: {
+                (disease.probability ?? (disease.confidence ? disease.confidence * 100 : 0)).toFixed(1)
+              }%
             </p>
           </div>
         </div>

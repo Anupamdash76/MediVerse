@@ -117,16 +117,18 @@ export default function DashboardHealthReport({
 
       <div className="space-y-6">
 
-        {prediction.predictions.map(
-          (disease) => (
+        {(prediction?.predictions || [])
+          .filter((disease) => disease && disease.disease)
+          .map(
+            (disease, idx) => (
 
-            <DashboardDiseaseCard
-              key={disease.disease}
-              disease={disease}
-            />
+              <DashboardDiseaseCard
+                key={disease.disease || idx}
+                disease={disease}
+              />
 
-          )
-        )}
+            )
+          )}
 
       </div>
 

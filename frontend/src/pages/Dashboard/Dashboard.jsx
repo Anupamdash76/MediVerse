@@ -135,16 +135,18 @@ export default function Dashboard() {
           ) : (
             <div className="mt-6 space-y-3">
               {stats.history.slice(0, 5).map((item) => {
-                const disease = item.predictions[0];
+                const disease = item.predictions?.[0];
+                const diseaseName = disease?.disease ? disease.disease.replaceAll("_", " ") : "Condition Analysis";
+                const severity = disease?.severity || "Low";
 
                 return (
                   <div
-                    key={item.id}
+                    key={item.id || item._id}
                     className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/50 p-4 sm:p-5 transition hover:bg-slate-50 hover:border-slate-200"
                   >
                     <div>
                       <h3 className="font-bold text-slate-900 text-sm sm:text-base">
-                        {disease.disease.replaceAll("_", " ")}
+                        {diseaseName}
                       </h3>
                       <p className="text-xs text-slate-500 mt-0.5 font-medium">
                         {formatDate(item.created_at)}
@@ -153,14 +155,14 @@ export default function Dashboard() {
 
                     <span
                       className={`rounded-full px-3.5 py-1 text-xs font-semibold ${
-                        disease.severity === "High"
+                        severity === "High"
                           ? "bg-red-100 text-red-700 border border-red-200"
-                          : disease.severity === "Moderate"
+                          : severity === "Moderate"
                           ? "bg-amber-100 text-amber-800 border border-amber-200"
                           : "bg-emerald-100 text-emerald-800 border border-emerald-200"
                       }`}
                     >
-                      {disease.severity}
+                      {severity}
                     </span>
                   </div>
                 );

@@ -64,7 +64,7 @@ export default function useDashboard() {
         totalPredictions: history.length,
 
         latestDisease:
-          history.length > 0
+          history.length > 0 && history[0]?.predictions?.[0]?.disease
             ? history[0].predictions[0].disease.replaceAll("_", " ")
             : "-",
 

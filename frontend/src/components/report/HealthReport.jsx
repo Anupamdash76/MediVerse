@@ -60,15 +60,17 @@ export default function HealthReport({
         </div>
 
         <div className="space-y-4">
-          {prediction.predictions.map((disease, index) => (
-            <DiseaseCard
-              key={disease.disease}
-              disease={disease}
-              index={index}
-              isSelected={selectedDisease === index}
-              onSelect={() => setSelectedDisease(index)}
-            />
-          ))}
+          {(prediction?.predictions || [])
+            .filter((disease) => disease && disease.disease)
+            .map((disease, index) => (
+              <DiseaseCard
+                key={disease.disease || index}
+                disease={disease}
+                index={index}
+                isSelected={selectedDisease === index}
+                onSelect={() => setSelectedDisease(index)}
+              />
+            ))}
         </div>
       </div>
 

@@ -5,6 +5,8 @@ from app.config.settings import (
     DATABASE_NAME,
 )
 
-client = AsyncIOMotorClient(MONGODB_URL)
+mongo_uri = MONGODB_URL.strip() if MONGODB_URL and MONGODB_URL.strip() else "mongodb://localhost:27017"
+
+client = AsyncIOMotorClient(mongo_uri)
 
 db = client[DATABASE_NAME]

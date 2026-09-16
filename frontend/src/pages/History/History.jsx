@@ -90,7 +90,7 @@ export default function History() {
 
                       <h2 className="text-2xl font-bold text-slate-800">
 
-                        {disease?.disease.replaceAll("_", " ")}
+                        {disease?.disease ? disease.disease.replaceAll("_", " ") : "Condition Analysis"}
 
                       </h2>
 

@@ -11,10 +11,12 @@ import SeverityBadge from "./SeverityBadge";
 export default function DashboardDiseaseCard({
   disease,
 }) {
-  const recommendedTests = disease.recommended_tests || [
+  const recommendedTests = disease?.recommended_tests || [
     "Complete Blood Count (CBC)",
     "Vital Signs Baseline Panel"
   ];
+  const precautions = disease?.precautions || [];
+  const medicines = disease?.recommended_medicines || [];
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-8 shadow-sm">
@@ -26,7 +28,7 @@ export default function DashboardDiseaseCard({
         <div>
 
           <h2 className="text-2xl font-bold text-slate-900">
-            {disease.disease}
+            {disease?.disease || "Condition Analysis"}
           </h2>
 
           <p className="mt-1 text-slate-500">
@@ -35,7 +37,7 @@ export default function DashboardDiseaseCard({
 
         </div>
 
-        <SeverityBadge severity={disease.severity} />
+        <SeverityBadge severity={disease?.severity || "Low"} />
 
       </div>
 
@@ -57,7 +59,7 @@ export default function DashboardDiseaseCard({
         </div>
 
         <p className="leading-7 text-slate-600">
-          {disease.summary}
+          {disease?.summary || "No description available."}
         </p>
 
       </div>
@@ -80,7 +82,7 @@ export default function DashboardDiseaseCard({
         </div>
 
         <p className="text-slate-600">
-          {disease.doctor_speciality}
+          {disease?.doctor_speciality || "General Physician"}
         </p>
 
       </div>
@@ -150,7 +152,7 @@ export default function DashboardDiseaseCard({
 
           <ul className="space-y-3">
 
-            {disease.precautions.map(
+            {precautions.map(
               (item, index) => (
 
                 <li
@@ -192,7 +194,7 @@ export default function DashboardDiseaseCard({
 
           <ul className="space-y-3">
 
-            {disease.recommended_medicines.map(
+            {medicines.map(
               (medicine, index) => (
 
                 <li

@@ -116,7 +116,7 @@ export default function generateReportPDF(
       doc.setTextColor(37, 99, 235);
 
       doc.text(
-        `${index + 1}. ${disease.disease.replaceAll(
+        `${index + 1}. ${(disease?.disease || "Condition").replaceAll(
           "_",
           " "
         )}`,
