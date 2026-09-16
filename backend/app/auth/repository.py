@@ -20,11 +20,14 @@ class AuthRepository:
         self,
         user_id: str,
     ):
-        return await users_collection.find_one(
-            {
-                "_id": ObjectId(user_id),
-            }
-        )
+        try:
+            return await users_collection.find_one(
+                {
+                    "_id": ObjectId(user_id),
+                }
+            )
+        except Exception:
+            return None
 
     async def create_user(
         self,

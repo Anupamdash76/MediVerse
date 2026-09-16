@@ -5,6 +5,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=1
+ENV NODE_PATH=/app/node_modules
 
 # Hugging Face Spaces non-root user (UID 1000) writable directories
 ENV HOME=/tmp
@@ -19,16 +20,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     npm \
     && rm -rf /var/lib/apt/lists/*
 
-COPY package*.json ./
+COPY backend/package*.json ./
 RUN npm install --only=production
 
-COPY requirements.txt .
+COPY backend/requirements.txt .
 
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY backend/ .
 
 # Ensure permissions for HF Spaces runtime
 RUN chmod -R 777 /app /tmp

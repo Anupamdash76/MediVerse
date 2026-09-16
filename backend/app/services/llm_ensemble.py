@@ -2,136 +2,112 @@ import os
 import json
 import re
 import logging
-import httpx
 from typing import List, Dict, Any, Tuple
+import httpx
 
 logger = logging.getLogger(__name__)
 
-async def get_grok_differential_diagnosis(symptom_text: str) -> Tuple[List[Dict[str, Any]], str]:
-    """
-    Queries Groq Cloud API, Google Gemini API, or xAI Grok API for top 3 differential diagnoses.
-    Returns tuple: (list_of_dicts, model_source_name_or_status)
-    """
-    gemini_key = (os.getenv("GEMINI_API_KEY") or os.getenv("gemini_api_key") or "").strip()
-    groq_key = (os.getenv("GROQ_API_KEY") or os.getenv("groq_api_key") or "").strip()
-    xai_key = (os.getenv("XAI_API_KEY") or os.getenv("xai_api_key") or "").strip()
-
-    # Auto-detect if XAI_API_KEY is actually a Groq key (starts with 'gsk_')
-    if not groq_key and xai_key.startswith("gsk_"):
-        groq_key = xai_key
-        xai_key = ""
-    elif xai_key.startswith("gsk_"):
-        xai_key = ""
-
-    if not gemini_key and not groq_key and not xai_key:
-        return [], "XGBoost ML (No LLM API Key in environment)"
-
-    prompt = f"""You are an expert clinical diagnostic AI assistant.
-Analyze the following patient symptoms and output TOP 3 differential diagnoses in JSON format.
-Symptoms: "{symptom_text}"
-
-Return ONLY a valid JSON array of objects with keys "disease" and "score" (where score is estimated probability between 0 and 100).
-Example format:
-[
-  {{"disease": "Pneumonia", "score": 75}},
-  {{"disease": "Bronchitis", "score": 15}},
-  {{"disease": "Common Cold", "score": 10}}
+# List of Groq candidate models to try in order of capability & speed
+GROQ_MODELS = [
+    "llama-3.3-70b-versatile",
+    "llama-3.1-8b-instant",
+    "llama3-70b-8192",
+    "llama3-8b-8192",
+    "deepseek-r1-distill-llama-70b",
 ]
+
+def _build_grok_prompt(symptoms_text: str) -> str:
+    return f"""You are an elite clinical AI diagnostic engine specializing in differential diagnosis.
+Analyze the following patient-reported symptoms and generate a ranked list of up to 3 most likely medical conditions.
+
+PATIENT SYMPTOMS:
+"{symptoms_text}"
+
+Return ONLY a valid JSON object matching this exact schema:
+{{
+  "differential_diagnosis": [
+    {{
+      "disease": "Exact Name of Disease 1",
+      "score": 90.0,
+      "recommended_tests": ["Complete Blood Count (CBC)", "Targeted Diagnostic Test 1"]
+    }},
+    {{
+      "disease": "Exact Name of Disease 2",
+      "score": 75.0,
+      "recommended_tests": ["Targeted Diagnostic Test 2"]
+    }},
+    {{
+      "disease": "Exact Name of Disease 3",
+      "score": 60.0,
+      "recommended_tests": ["Targeted Diagnostic Test 3"]
+    }}
+  ]
+}}
+
+CRITICAL INSTRUCTIONS:
+- Return ONLY the JSON object. Do NOT include markdown codeblocks (no ```json).
+- Provide maximum 3 diseases sorted by likelihood score (percentage between 0 and 100).
+- Do not output any preamble, commentary, or postscript text.
 """
 
-    async with httpx.AsyncClient(timeout=10.0) as client:
+async def get_grok_differential_diagnosis(symptoms_text: str) -> Tuple[List[Dict[str, Any]], str]:
+    """
+    Queries Groq API with robust model fallback sequence.
+    Returns (list_of_prediction_dicts, model_source_name).
+    """
+    api_key = os.getenv("GROQ_API_KEY", "").strip()
+    if not api_key:
+        logger.warning("GROQ_API_KEY missing from environment. Skipping LLM ensemble step.")
+        return [], "XGBoost ML"
 
-        # 1. TRY GROQ API FIRST (Fast LPU Inference)
-        if groq_key and len(groq_key) > 5:
-            groq_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"]
-            for g_model in groq_models:
-                try:
-                    url = "https://api.groq.com/openai/v1/chat/completions"
-                    headers = {
-                        "Content-Type": "application/json",
-                        "Authorization": f"Bearer {groq_key}"
-                    }
-                    payload = {
-                        "model": g_model,
-                        "messages": [{"role": "user", "content": prompt}],
-                        "temperature": 0.2
-                    }
-                    res = await client.post(url, json=payload, headers=headers)
-                    if res.status_code == 200:
-                        content = res.json()["choices"][0]["message"]["content"]
-                        match = re.search(r'\[.*\]', content, re.DOTALL)
-                        if match:
-                            results = json.loads(match.group(0))
-                            return results, f"Groq LPU ({g_model})"
-                    elif res.status_code == 429:
-                        logger.warning(f"Groq API Quota Exceeded (429) on model {g_model}")
-                        continue
-                    else:
-                        logger.warning(f"Groq API endpoint '{g_model}' Status {res.status_code}: {res.text}")
-                except Exception as e:
-                    logger.warning(f"Groq exception for '{g_model}': {e}")
+    prompt = _build_grok_prompt(symptoms_text)
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
 
-        # 2. TRY GEMINI API NEXT
-        if gemini_key and len(gemini_key) > 5:
-            gemini_models = ["gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro"]
-            
-            for model_name in gemini_models:
-                try:
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
-                    headers = {"Content-Type": "application/json"}
-                    payload = {
-                        "contents": [{
-                            "parts": [{"text": prompt}]
-                        }]
-                    }
-                    res = await client.post(url, json=payload, headers=headers)
-                    if res.status_code == 200:
-                        data = res.json()
-                        content = data["candidates"][0]["content"]["parts"][0]["text"]
-                        match = re.search(r'\[.*\]', content, re.DOTALL)
-                        if match:
-                            results = json.loads(match.group(0))
-                            return results, f"Google Gemini ({model_name})"
-                    elif res.status_code == 429:
-                        logger.warning(f"Gemini API Quota Exceeded (429) on model {model_name}")
-                        continue
-                    else:
-                        logger.warning(f"Gemini API endpoint '{model_name}' Status {res.status_code}: {res.text}")
-                except Exception as e:
-                    logger.warning(f"Gemini exception for '{model_name}': {e}")
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        for model in GROQ_MODELS:
+            payload = {
+                "model": model,
+                "messages": [
+                    {"role": "system", "content": "You are a clinical diagnostic AI. Return JSON only."},
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.2,
+                "response_format": {"type": "json_object"}
+            }
 
-        # 3. TRY xAI GROK API NEXT
-        if xai_key and len(xai_key) > 5:
-            grok_models = ["grok-2-latest", "grok-beta"]
-            for g_model in grok_models:
-                try:
-                    url = "https://api.x.ai/v1/chat/completions"
-                    headers = {
-                        "Content-Type": "application/json",
-                        "Authorization": f"Bearer {xai_key}"
-                    }
-                    payload = {
-                        "model": g_model,
-                        "messages": [{"role": "user", "content": prompt}],
-                        "temperature": 0.2
-                    }
-                    res = await client.post(url, json=payload, headers=headers)
-                    if res.status_code == 200:
-                        content = res.json()["choices"][0]["message"]["content"]
-                        match = re.search(r'\[.*\]', content, re.DOTALL)
-                        if match:
-                            results = json.loads(match.group(0))
-                            return results, f"xAI Grok ({g_model})"
-                    elif res.status_code == 429:
-                        logger.warning(f"Grok API Quota Exceeded (429) on model {g_model}")
-                        continue
-                    elif res.status_code == 400:
-                        logger.warning(f"Grok API HTTP 400 on model {g_model}")
-                        continue
-                except Exception as e:
-                    logger.warning(f"Grok exception for '{g_model}': {e}")
+            try:
+                resp = await client.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    json=payload,
+                    headers=headers
+                )
 
-    return [], "XGBoost ML (LLM Quota Exceeded or Unavailable)"
+                if resp.status_code == 200:
+                    data = resp.json()
+                    content = data["choices"][0]["message"]["content"].strip()
+
+                    # Clean potential markdown wrapping
+                    if content.startswith("```"):
+                        content = re.sub(r"^```(?:json)?", "", content, flags=re.IGNORECASE)
+                        content = re.sub(r"```$", "", content).strip()
+
+                    parsed = json.loads(content)
+                    items = parsed.get("differential_diagnosis", [])
+                    if isinstance(items, list) and len(items) > 0:
+                        logger.info(f"[GROQ LLM SUCCESS] Model '{model}' generated {len(items)} predictions.")
+                        return items[:3], f"Groq AI ({model})"
+                else:
+                    logger.warning(f"Groq model '{model}' returned HTTP {resp.status_code}: {resp.text[:150]}")
+
+            except Exception as e:
+                logger.warning(f"Failed to query Groq model '{model}': {e}")
+
+    logger.warning("All Groq LLM models failed or returned invalid responses. Falling back to XGBoost ML.")
+    return [], "XGBoost ML"
+
 
 def ensemble_predictions(
     xgb_predictions: List[Dict[str, Any]],
@@ -145,7 +121,7 @@ def ensemble_predictions(
     if not llm_predictions:
         for item in xgb_predictions:
             item["ensemble_source"] = model_source
-        return xgb_predictions
+        return xgb_predictions[:3]
 
     # Key -> dict of candidate data
     candidates = {}

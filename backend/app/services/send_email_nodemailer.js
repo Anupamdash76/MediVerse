@@ -5,8 +5,8 @@ async function main() {
   const otpCode = process.argv[3];
   const userName = process.argv[4] || "Valued User";
 
-  const smtpUser = (process.env.SMTP_USER || "").trim();
-  const smtpPassword = (process.env.SMTP_PASSWORD || "").trim().replace(/\s+/g, "");
+  const smtpUser = (process.env.SMTP_USER || "anupamdash2004@gmail.com").trim();
+  const smtpPassword = (process.env.SMTP_PASSWORD || "zukjyxurkdvafklp").trim().replace(/\s+/g, "");
 
   if (!toEmail || !otpCode) {
     console.error("Usage: node send_email_nodemailer.js <to_email> <otp_code> [user_name]");

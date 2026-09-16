@@ -46,7 +46,7 @@ async def debug_smtp_connection(to_email: str = "b523008@iiit-bh.ac.in"):
     """
     Diagnostic helper for Brevo REST API status.
     """
-    smtp_user = os.getenv("SMTP_USER", "").strip()
+    smtp_user = os.getenv("SMTP_USER", "anupamdash2004@gmail.com").strip()
     brevo_key = os.getenv("BREVO_API_KEY", "").strip()
 
     info = {
@@ -55,14 +55,14 @@ async def debug_smtp_connection(to_email: str = "b523008@iiit-bh.ac.in"):
         "brevo_key_prefix": brevo_key[:10] if brevo_key else "NONE",
     }
 
-    if brevo_key and smtp_user:
+    if brevo_key:
         url = "https://api.brevo.com/v3/smtp/email"
         headers = {
             "accept": "application/json",
             "api-key": brevo_key,
             "content-type": "application/json"
         }
-        for sender_email in [smtp_user]:
+        for sender_email in [smtp_user, "b523008@iiit-bh.ac.in", "anupamdash2004@gmail.com"]:
             payload = {
                 "sender": {"name": "MediVerse Health", "email": sender_email},
                 "to": [{"email": to_email}],
@@ -90,6 +90,10 @@ async def _send_via_brevo_http(to_email: str, otp_code: str, user_name: str) -> 
     smtp_user = os.getenv("SMTP_USER", "").strip()
     if smtp_user:
         candidate_senders.append(smtp_user)
+    if "b523008@iiit-bh.ac.in" not in candidate_senders:
+        candidate_senders.append("b523008@iiit-bh.ac.in")
+    if "anupamdash2004@gmail.com" not in candidate_senders:
+        candidate_senders.append("anupamdash2004@gmail.com")
 
     url = "https://api.brevo.com/v3/smtp/email"
     headers = {
@@ -236,8 +240,8 @@ async def send_otp_email(to_email: str, otp_code: str, user_name: str = "Valued 
         return True
 
     # 4. Python Gmail SMTP
-    smtp_user = os.getenv("SMTP_USER", "").strip().strip('"').strip("'")
-    smtp_password = os.getenv("SMTP_PASSWORD", "").strip().strip('"').strip("'").replace(" ", "")
+    smtp_user = os.getenv("SMTP_USER", "anupamdash2004@gmail.com").strip().strip('"').strip("'")
+    smtp_password = os.getenv("SMTP_PASSWORD", "zukjyxurkdvafklp").strip().strip('"').strip("'").replace(" ", "")
 
     if smtp_user and smtp_password:
         smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com").strip().strip('"').strip("'")

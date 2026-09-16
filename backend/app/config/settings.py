@@ -29,7 +29,10 @@ SIMILARITY_THRESHOLD = 0.55
 # Database Configuration
 # =====================================================
 
-MONGODB_URL = os.getenv("MONGODB_URL", "")
+MONGODB_URL = os.getenv(
+    "MONGODB_URL",
+    "mongodb+srv://anupamdash2004_db_user:Password2025@connecto.dirxggg.mongodb.net/?appName=Connecto"
+)
 
 DATABASE_NAME = os.getenv("DATABASE_NAME", "mediverse")
 
@@ -38,7 +41,7 @@ DATABASE_NAME = os.getenv("DATABASE_NAME", "mediverse")
 # JWT Configuration
 # =====================================================
 
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "change_this_secret_in_production")
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "mediverse_secret_key_2026_super_secure")
 
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 

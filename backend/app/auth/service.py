@@ -1,52 +1,35 @@
 import random
 from datetime import datetime, timedelta, timezone
-
 from app.auth.repository import auth_repository
-from app.auth.security import (
-    hash_password,
-    verify_password,
-    create_access_token,
-)
+from app.auth.security import verify_password, hash_password, create_access_token
 from app.services.email_service import send_otp_email
-
+import asyncio
 
 class AuthService:
-
-    async def register(
-        self,
-        name: str,
-        email: str,
-        password: str,
-    ):
+    async def register(self, name: str, email: str, password: str):
+        """
+        Registers a new user account if the email does not already exist.
+        """
         email_clean = email.strip().lower()
-
-        # Check if email already exists
-        existing_user = await auth_repository.get_user_by_email(
-            email_clean
-        )
+        existing_user = await auth_repository.get_user_by_email(email_clean)
 
         if existing_user:
-            raise ValueError(
-                "Email already registered."
-            )
+            raise ValueError("Email already registered.")
 
-        now = datetime.now(timezone.utc)
-
-        user = {
-            "name": name,
-            "email": email_clean,
-            "password": hash_password(password),
-            "created_at": now,
-            "updated_at": now,
-        }
-
+        hashed = hash_password(password)
         created_user = await auth_repository.create_user(
-            user
+            {
+                "name": name,
+                "email": email_clean,
+                "password": hashed,
+            }
         )
+
+        user_id = str(created_user["_id"])
 
         token = create_access_token(
             {
-                "sub": str(created_user["_id"]),
+                "sub": user_id,
             }
         )
 
@@ -54,29 +37,20 @@ class AuthService:
             "access_token": token,
             "token_type": "bearer",
             "user": {
-                "id": str(created_user["_id"]),
-                "name": created_user["name"],
-                "email": created_user["email"],
+                "id": user_id,
+                "name": name,
+                "email": email_clean,
             },
         }
 
-    async def login(
-        self,
-        email: str,
-        password: str,
-    ):
+    async def login(self, email: str, password: str):
+        """
+        Authenticates an existing user and returns JWT token.
+        """
         email_clean = email.strip().lower()
+        user = await auth_repository.get_user_by_email(email_clean)
 
-        user = await auth_repository.get_user_by_email(
-            email_clean
-        )
-
-        if not user:
-            raise ValueError(
-                "Invalid email or password."
-            )
-
-        if not verify_password(
+        if not user or not verify_password(
             password,
             user["password"],
         ):
@@ -102,7 +76,7 @@ class AuthService:
 
     async def forgot_password(self, email: str):
         """
-        Generates a 6-digit verification code, saves it in DB, and emails it to user.
+        Generates a 6-digit verification code, saves it in DB, and emails it to user asynchronously.
         """
         email_clean = email.strip().lower()
         user = await auth_repository.get_user_by_email(email_clean)
@@ -153,20 +127,18 @@ class AuthService:
 
     async def reset_password(self, email: str, otp: str, new_password: str):
         """
-        Resets user password after verifying OTP.
+        Validates the OTP code, hashes the new password, and updates user credentials.
         """
+        await self.verify_otp(email, otp)
         email_clean = email.strip().lower()
-        # First verify the OTP
-        await self.verify_otp(email_clean, otp)
 
-        # Hash new password and update in DB
-        hashed_pwd = hash_password(new_password)
-        await auth_repository.update_password(email_clean, hashed_pwd)
+        hashed_password = hash_password(new_password)
+        await auth_repository.update_password(email_clean, hashed_password)
+        await auth_repository.clear_otp(email_clean)
 
         return {
-            "message": "Password reset successfully! You can now log in with your new password.",
+            "message": "Password reset successfully. You can now login with your new password.",
             "status": "success"
         }
-
 
 auth_service = AuthService()
